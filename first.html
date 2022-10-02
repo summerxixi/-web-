@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <!-- 思路：网页班的页面总共三部分，left,mid,right ,right设置最小宽度。left引用图标，-->
+    <link rel="stylesheet" href="//at.alicdn.com/t/c/font_3546889_wh88o4mc4gl.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html,
+        body {
+            height: 100%;
+        }
+
+        ::-webkit-scrollbar {
+            display: none;
+
+        }
+
+
+        li {
+            list-style: none;
+        }
+
+        .container {
+            display: flex;
+            width: 100%;
+            height: 100%;
+        }
+
+        .left {
+            background: #2e2e2e;
+            width: 55px;
+            height: 100%;
+            position: relative;
+            text-align: center;
+        }
+
+        .left .nav {
+            width: 55px;
+            position: absolute;
+            top: 50px;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .left .nav .avatar {
+            height: 35px;
+            width: 35px;
+            background-image: url(./images/1.png);
+            background-size: 100%;
+        }
+
+        .left .nav li {
+            font-size: 25px;
+            text-align: center;
+            margin-bottom: 20px;
+            color: #eae8e6;
+        }
+
+        .center {
+            width: 250px;
+            background: #e8e7e6;
+            overflow: auto;
+        }
+
+        .center .message {
+            overflow: auto;
+            width: 250px;
+        }
+
+        .center-top {
+            height: 60px;
+            background-color: #F5F5F5;
+            border-right: 1px solid #e2e2e2;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            align-content: center;
+            position: sticky;
+            top: 0px;
+        }
+
+        .center-top .search {
+            vertical-align: middle;
+            height: 25px;
+            width: 190px;
+            background-color: #e2e2e2;
+            border-radius: 5px;
+            color: black;
+            line-height: 25px;
+            text-align: center;
+        }
+
+        .center-top .search input {
+            display: inline-block;
+            vertical-align: middle;
+            outline: none;
+            border: none;
+            background-color: #e2e2e2;
+            font-size: 12px;
+        }
+
+
+        .center .message li {
+            height: 60px;
+            line-height: 60px;
+            color: #2e2e2e;
+            text-align: center;
+            display: flex;
+            background: #E5E6E7;
+
+        }
+
+        /* 8px的滚动条宽度 */
+        .message:hover {
+            overflow-y: auto;
+
+        }
+
+        .center .message li:hover {
+            background: #E3E0DF;
+        }
+
+
+        .message li img {
+            width: 40px;
+            height: 40px;
+            background: green;
+            margin: 10px;
+        }
+
+        .message li p {
+            line-height: 60px;
+            font-family: "Arial", "Microsoft YaHei", "黑体", "宋体", sans-serif;
+        }
+
+        .right {
+            width: calc(100% - 300px);
+            height: 100%;
+            background: #F5F5F5;
+            overflow: auto;
+            background-image: url(./bm.jpg);
+        }
+
+        .right-top {
+            width: 100%;
+            height: 60px;
+            background-color: #F5F5F5;
+            border-bottom: 1px solid #e2e2e2;
+            position: sticky;
+            top: 0;
+            z-index: 1;
+        }
+
+        .right-top {
+            line-height: 60px;
+        }
+
+        .right-top p {
+            margin-left: 20px;
+        }
+
+        .right-chat {
+            width: 100%;
+            overflow: auto;
+        }
+
+        .right-chat-other {
+            height: 35px;
+            /* border: 1px solid pink; */
+            margin: 15px 0;
+            display: flex;
+        }
+
+        .right-chat-other img {
+            height: 35px;
+            width: 35px;
+            margin-left: 30px;
+        }
+
+
+        .right-chat-other p {
+            position: relative;
+            font-size: 12px;
+            line-height: 35px;
+            border-radius: 5px;
+            margin-left: 20px;
+            padding: 0px 5px;
+            background: #FFFFFF;
+            background-size: 220px auto;
+        }
+
+        .right-chat-other p:after {
+            content: '';
+            position: absolute;
+            top: 10px;
+            left: -13px;
+            border: 7px solid #F5F5F5;
+            border-right-color: transparent;
+            background: inherit;
+            background-size: auto;
+            background-clip: border-box;
+            background-origin: border-box;
+            background-position: 20px -30px;
+        }
+
+        .right-chat-myself {
+            height: 35px;
+            /* border: 1px solid pink; */
+            margin: 15px 0;
+            display: flex;
+            justify-content: flex-end;
+        }
+
+        .right-chat-myself img {
+            height: 35px;
+            width: 35px;
+            margin-right: 30px;
+        }
+
+        .right-chat-myself p {
+            position: relative;
+            font-size: 12px;
+            line-height: 35px;
+            padding: 0px 5px;
+            border-radius: 5px;
+            margin-right: 15px;
+            background: #95EC69;
+            background-size: 220px auto;
+        }
+
+        .right-chat-myself p:after {
+            content: '';
+            position: absolute;
+            top: 10px;
+            right: -13px;
+            border: 7px solid #F5F5F5;
+            border-left-color: transparent;
+            background: inherit;
+            background-size: auto;
+            background-clip: border-box;
+            background-origin: border-box;
+            background-position: 20px -30px;
+        }
+
+        /* 底部输入框 */
+        .right-output {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-around;
+            width: 100%;
+            height: 140px;
+            position: sticky;
+            bottom: 0px;
+            background: #F5F5F5;
+        }
+
+        .right-output .icon {
+            height: 30px;
+            width: 100%;
+            display: flex;
+            align-items: center;
+        }
+
+        .right-output .icon .iconfont {
+            margin: 0px 10px;
+            font-size: 20px;
+        }
+
+        .right-output #sr {
+            outline-style: none;
+            border: 0px;
+            width: 100%;
+            height: 50%;
+            font-size: 12px;
+            padding: 12px;
+            border-radius: 25px;
+            color: #666;
+            word-break: break-all;
+            /* background: skyblue; */
+        }
+
+        .right-output .send {
+            position: relative;
+            height: 30px;
+            width: 100%;
+        }
+
+        .right-output .send button {
+            position: absolute;
+            height: 30px;
+            width: 100px;
+            line-height: 30px;
+            text-align: center;
+            right: 30px;
+            font-size: 12px;
+            border: none;
+            border-radius: 5px;
+            color: #56b626;
+        }
+
+        .right-output .send button:hover {
+            background: pink;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="left">
+            <ul class="nav">
+                <li class="avatar"></li>
+                <li class="iconfont icon-xiaoxi_o"></li>
+                <li class="iconfont icon-wodelianxiren"></li>
+                <li class="iconfont icon-zhengfangti-xianxing"></li>
+                <li class="iconfont icon-pengyouquan"></li>
+            </ul>
+        </div>
+        <div class="center">
+            <div class="center-top">
+                <div class="search">
+                    <i class="iconfont icon-sousuo" style="color:black"></i>
+                    <input type="text" placeholder="搜索">
+                </div>
+
+                <div style="width:25px; height: 25px; background-color: #cccccc; line-height:25px; 
+                text-align: center; border-radius: 5px;">
+                    <i class="iconfont icon-jiahao_o"></i>
+                </div>
+            </div>
+            <ul class="message">
+                <li>
+                    <img src="./images/2.png" alt="">
+                    <p>草莓啵啵呗 </p>
+                </li>
+                <li>
+                    <img src="./images/3.png" alt="">
+                    <p>滟滟随波千万里 </p>
+                </li>
+                <li>
+                    <img src="./images/3.png" alt="">
+                    <p>滟滟随波千万里 </p>
+                </li>
+                <li>
+                    <img src="./images/3.png" alt="">
+                    <p>滟滟随波千万里 </p>
+                </li>
+                <li>
+                    <img src="./images/3.png" alt="">
+                    <p>滟滟随波千万里 </p>
+                </li>
+                <li>
+                    <img src="./images/3.png" alt="">
+                    <p>滟滟随波千万里 </p>
+                </li>
+                <li>
+                    <img src="./images/3.png" alt="">
+                    <p>滟滟随波千万里 </p>
+                </li>
+                <li>
+                    <img src="./images/3.png" alt="">
+                    <p>滟滟随波千万里 </p>
+                </li>
+                <li>
+                    <img src="./images/3.png" alt="">
+                    <p>滟滟随波千万里 </p>
+                </li>
+                <li>
+                    <img src="./images/3.png" alt="">
+                    <p>滟滟随波千万里 </p>
+                </li>
+                <li>
+                    <img src="./images/3.png" alt="">
+                    <p>滟滟随波千万里 </p>
+                </li>
+                <li>
+                    <img src="./images/3.png" alt="">
+                    <p>滟滟随波千万里 </p>
+                </li>
+                <li>
+                    <img src="./images/3.png" alt="">
+                    <p>滟滟随波千万里 </p>
+                </li>
+                <li>
+                    <img src="./images/3.png" alt="">
+                    <p>滟滟随波千万里 </p>
+                </li>
+                <li>
+                    <img src="./images/3.png" alt="">
+                    <p>滟滟随波千万里 </p>
+                </li>
+                <li>
+                    <img src="./images/3.png" alt="">
+                    <p>滟滟随波千万里 </p>
+                </li>
+                <li>
+                    <img src="./images/3.png" alt="">
+                    <p>滟滟随波千万里 </p>
+                </li>
+                <li>
+                    <img src="./images/3.png" alt="">
+                    <p>滟滟随波千万里 </p>
+                </li>
+                <li>
+                    <img src="./images/3.png" alt="">
+                    <p>滟滟随波千万里 </p>
+                </li>
+            </ul>
+
+
+        </div>
+        <div class="right">
+            <div class="right-top">
+                <p class="chatname">滟滟随波千万里</p>
+            </div>
+            <div class="right-chat">
+                <ul>
+                    <li class="right-chat-other">
+                        <img src="./images/3.png" alt="">
+                        <p>今晚吃啥呀?</p>
+                    </li>
+                    <li class="right-chat-myself">
+                        <p>呼呼呼，想吃百景园的酸菜鱼</p>
+                        <img src="./images/1.png" alt="">
+
+                    </li>
+                    <li class="right-chat-other">
+                        <img src="./images/3.png" alt="">
+                        <p>可以呀，那待会见哦。</p>
+                    </li>
+                    <li class="right-chat-other">
+                        <img src="./images/3.png" alt="">
+                        <p>今晚吃啥呀?</p>
+                    </li>
+                    <li class="right-chat-myself">
+                        <p>呼呼呼，想吃百景园的酸菜鱼</p>
+                        <img src="./images/1.png" alt="">
+
+                    </li>
+                    <li class="right-chat-other">
+                        <img src="./images/3.png" alt="">
+                        <p>可以呀，那待会见哦。</p>
+                    </li>
+                    <li class="right-chat-other">
+                        <img src="./images/3.png" alt="">
+                        <p>今晚吃啥呀?</p>
+                    </li>
+                    <li class="right-chat-myself">
+                        <p>呼呼呼，想吃百景园的酸菜鱼</p>
+                        <img src="./images/1.png" alt="">
+
+                    </li>
+                    <li class="right-chat-other">
+                        <img src="./images/3.png" alt="">
+                        <p>可以呀，那待会见哦。</p>
+                    </li>
+                    <li class="right-chat-other">
+                        <img src="./images/3.png" alt="">
+                        <p>今晚吃啥呀?</p>
+                    </li>
+                    <li class="right-chat-myself">
+                        <p>呼呼呼，想吃百景园的酸菜鱼</p>
+                        <img src="./images/1.png" alt="">
+
+                    </li>
+                    <li class="right-chat-other">
+                        <img src="./images/3.png" alt="">
+                        <p>可以呀，那待会见哦。</p>
+                    </li>
+                    <li class="right-chat-other">
+                        <img src="./images/3.png" alt="">
+                        <p>今晚吃啥呀?</p>
+                    </li>
+                    <li class="right-chat-myself">
+                        <p>呼呼呼，想吃百景园的酸菜鱼</p>
+                        <img src="./images/1.png" alt="">
+
+                    </li>
+                    <li class="right-chat-other">
+                        <img src="./images/3.png" alt="">
+                        <p>可以呀，那待会见哦。</p>
+                    </li>
+                    <li class="right-chat-other">
+                        <img src="./images/3.png" alt="">
+                        <p>今晚吃啥呀?</p>
+                    </li>
+                    <li class="right-chat-myself">
+                        <p>呼呼呼，想吃百景园的酸菜鱼</p>
+                        <img src="./images/1.png" alt="">
+
+                    </li>
+                    <li class="right-chat-other">
+                        <img src="./images/3.png" alt="">
+                        <p>可以呀，那待会见哦。</p>
+                    </li>
+
+                </ul>
+            </div>
+
+            <div class="right-output">
+                <ul class="icon">
+
+                    <li class="iconfont icon-xiaolian-" style="color:rgb(198, 218, 88);"></li>
+                    <li class="iconfont icon-wenjianjia" style="color:rgb(138, 113, 12);"></li>
+                    <li class="iconfont icon-jiandao" style="color:rgb(67, 55, 49);"></li>
+                    <li class="iconfont icon-xiaoxi" style="color:rgb(92, 236, 128);"></li>
+                    <li class="iconfont icon-dianhua" style="color:rgb(209, 141, 182);"></li>
+                    <li class="iconfont icon-shipincopy" style="color:aquamarine;"></li>
+
+                </ul>
+                <input type="text" id="sr" placeholder="请输入文字" />
+                <div class="send"><button><strong>发送</strong></button></div>
+            </div>
+
+        </div>
+
+
+    </div>
+
+    <script>
+        var tags = document.querySelector('.nav').querySelectorAll('.iconfont');
+        for (let i = 0; i < tags.length; i++) {
+            tags[i].onclick = function () {
+                for (let j = 0; j < tags.length; j++) {
+                    tags[j].style.color = ''
+                }
+                this.style.color = '#07c160'
+            }
+        }
+
+        var search = document.querySelector('.center').querySelector('input');
+        var searchOutter = document.querySelector('.search');
+        search.onfocus = function () {
+            this.style.backgroundColor = '#fafdf9';
+            searchOutter.style.backgroundColor = '#fafdf9';
+            this.style.borderColor = 'grey'
+
+            console.log(this.backgroundColor)
+        }
+        search.onblur = function () {
+            this.style.backgroundColor = ' #e2e2e2';
+            searchOutter.style.backgroundColor = ' #e2e2e2';
+        }
+    </script>
+
+</body>
+
+</html>
