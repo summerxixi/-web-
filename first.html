@@ -151,7 +151,7 @@
             height: 100%;
             background: #F5F5F5;
             overflow: auto;
-            background-image: url(./bm.jpg);
+            /* background-image: url(./images/bm.jpg); */
         }
 
         .right-top {
@@ -345,6 +345,7 @@
                     <img src="./images/2.png" alt="">
                     <p>草莓啵啵呗 </p>
                 </li>
+                <!-- list [ {img:'',name:''},{img:'',name:''}] -->
                 <li>
                     <img src="./images/3.png" alt="">
                     <p>滟滟随波千万里 </p>
@@ -530,6 +531,33 @@
     </div>
 
     <script>
+     
+        // 聊天中间界面，改进：用数组存放信息
+
+
+
+
+
+
+        //聊天记录添加自己的聊天，按回车或者发送获取到输入框的内容。
+        document.querySelector('.send').addEventListener('click', () => { addMessage() })
+        document.querySelector('#sr').addEventListener('keyup',function (event){
+            if (event.which === 13) {
+                addMessage()
+            }
+        })
+        function addMessage() {
+            let newLi = document.createElement("li");
+            let content = document.getElementById('sr');
+            newLi.innerHTML = `  
+            <p class="">${content.value}</p>
+            <img src="./images/1.png" alt="">
+            `
+            newLi.className = 'right-chat-myself'
+            document.querySelector('.right-chat').appendChild(newLi);
+            content.value = ""
+        }
+
         var tags = document.querySelector('.nav').querySelectorAll('.iconfont');
         for (let i = 0; i < tags.length; i++) {
             tags[i].onclick = function () {

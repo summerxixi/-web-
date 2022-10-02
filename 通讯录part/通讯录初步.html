@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="//at.alicdn.com/t/c/font_3546889_wh88o4mc4gl.css">
+</head>
+<style>
+    .page {
+        width: 250px;
+        height: 10000px;
+    }
+    .center-top {
+            height: 60px;
+            background-color: #F5F5F5;
+            border-right: 1px solid #e2e2e2;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            align-content: center;
+            position: sticky;
+            top: 0px;
+        }
+
+        .center-top .search {
+            vertical-align: middle;
+            height: 25px;
+            width: 190px;
+            background-color: #e2e2e2;
+            border-radius: 5px;
+            color: black;
+            line-height: 25px;
+            text-align: center;
+        }
+
+        .center-top .search input {
+            display: inline-block;
+            vertical-align: middle;
+            outline: none;
+            border: none;
+            background-color: #e2e2e2;
+            font-size: 12px;
+        }
+
+    .item {
+        height: 60px;
+        display: flex;
+        align-items: center;
+        background: #E6E7E8;
+    }
+
+    .item img {
+        height: 40px;
+        width: 40px;
+        margin: 0px 20px;
+    }
+    .item:hover{ 
+        background-color: #DFDDDB;
+    }
+    .item div {
+        
+        height: 60px;
+        line-height: 60px;
+    }
+
+    .item-head {
+        height: 35px;
+        background: rgb(211, 187, 187);
+        line-height: 20px;
+        padding-left: 20px;
+        /* margin:2px ; */
+    }
+    
+    * {
+        margin: 0;
+        padding: 0
+    }
+
+    a {
+        text-decoration: none;
+    }
+
+    .letter {
+        list-style: none;
+        position: fixed;
+        left: 210px;
+        top: 100px;
+    }
+
+    .letter li {
+        width: 50px;
+        height: 15px;
+        font-size: 12px;
+        line-height: 12px;
+        text-align: center;
+        /* border: 1px solid black; */
+    }
+</style>
+
+<body>
+    <div id="page" class="page">
+       
+    </div>
+   
+</body>
+<script>
+    let data = [
+        {
+            name: 'banana',
+            badge: 'http://www.freeiconspng.com/uploads/pikachu-png-icon-7.png'
+        },
+        {
+            name: 'cat',
+            badge: 'http://www.freeiconspng.com/uploads/pikachu-png-icon-7.png'
+        },
+        {
+            name: 'egg',
+            badge: 'http://www.freeiconspng.com/uploads/pikachu-png-icon-7.png'
+        },
+        {
+            name: 'farmer',
+            badge: 'http://www.freeiconspng.com/uploads/pikachu-png-icon-7.png'
+        },
+        {
+            name: 'food',
+            badge: 'http://www.freeiconspng.com/uploads/pikachu-png-icon-7.png'
+        },
+        {
+            name: 'jeep',
+            badge: 'http://www.freeiconspng.com/uploads/pikachu-png-icon-7.png'
+        },
+        {
+            name: 'joke',
+            badge: 'http://www.freeiconspng.com/uploads/pikachu-png-icon-7.png'
+        },
+        {
+            name: 'lisa',
+            badge: 'http://www.freeiconspng.com/uploads/pikachu-png-icon-7.png'
+        },
+        {
+            name: 'low',
+            badge: 'http://www.freeiconspng.com/uploads/pikachu-png-icon-7.png'
+        },
+        {
+            name: 'jude',
+            badge: 'http://www.freeiconspng.com/uploads/pikachu-png-icon-7.png'
+        },
+        {
+            name: 'apple',
+            badge: 'http://www.freeiconspng.com/uploads/pikachu-png-icon-7.png'
+        },
+        {
+            name: '1',
+            badge: 'http://www.freeiconspng.com/uploads/pikachu-png-icon-7.png'
+        },
+        {
+            name: '2',
+            badge: 'http://www.freeiconspng.com/uploads/pikachu-png-icon-7.png'
+        },
+        {
+            name: '谭小生',
+            badge: 'http://www.freeiconspng.com/uploads/pikachu-png-icon-7.png'
+        },
+        {
+            name: '张中',
+            badge: 'http://www.freeiconspng.com/uploads/pikachu-png-icon-7.png'
+        },
+        {
+            name: '李大哥',
+            badge: 'http://www.freeiconspng.com/uploads/pikachu-png-icon-7.png'
+        },
+        {
+            name: '江东父老',
+            badge: 'http://www.freeiconspng.com/uploads/pikachu-png-icon-7.png'
+        },
+        {
+            name: '福康安',
+            badge: 'http://www.freeiconspng.com/uploads/pikachu-png-icon-7.png'
+        },
+        {
+            name: '陈云',
+            badge: 'http://www.freeiconspng.com/uploads/pikachu-png-icon-7.png'
+        },
+        {
+            name: '宝玉',
+            badge: 'http://www.freeiconspng.com/uploads/pikachu-png-icon-7.png'
+        },
+        {
+            name: '曹方',
+            badge: 'http://www.freeiconspng.com/uploads/pikachu-png-icon-7.png'
+        },
+        {
+            name: '郑智',
+            badge: 'http://www.freeiconspng.com/uploads/pikachu-png-icon-7.png'
+        },
+        {
+            name: '冯年过节',
+            badge: 'http://www.freeiconspng.com/uploads/pikachu-png-icon-7.png'
+        },
+        {
+            name: '贾定春',
+            badge: 'http://www.freeiconspng.com/uploads/pikachu-png-icon-7.png'
+        },
+        {
+            name: '罗生门',
+            badge: 'http://www.freeiconspng.com/uploads/pikachu-png-icon-7.png'
+        },
+        {
+            name: '刘安',
+            badge: 'http://www.freeiconspng.com/uploads/pikachu-png-icon-7.png'
+        },
+        {
+            name: '朱卫生',
+            badge: 'http://www.freeiconspng.com/uploads/pikachu-png-icon-7.png'
+        },
+        {
+            name: '阿诚',
+            badge: 'http://www.freeiconspng.com/uploads/pikachu-png-icon-7.png'
+        }
+    ]
+
+    let page = document.getElementById("page")
+    let innerHtml = ''
+
+    let map = {};
+    let c = 'A'.charCodeAt();
+    for (; c <= 'Z'.charCodeAt(); c++) {
+        map[String.fromCharCode(c)] = [];
+    }
+    map['#'] = [];
+
+    data.forEach(function (item) {
+        firstCharUpper = this.getFirstUpperChar(item.name);
+        if (map.hasOwnProperty(firstCharUpper)) {
+            map[firstCharUpper].push(item);
+        } else {
+            map['#'].push(item);
+        }
+    });
+
+    function getFirstUpperChar(str) {
+        string = String(str);
+        var c = string[0];
+        if (/[^\u4e00-\u9fa5]/.test(c)) {
+            return c.toUpperCase();
+        }
+        else {
+            return this.chineseToEnglish(c);
+        }
+    }
+
+    function chineseToEnglish(c) {
+        var idx = -1;
+        var MAP = 'ABCDEFGHJKLMNOPQRSTWXYZ';
+        var boundaryChar = '驁簿錯鵽樲鰒餜靃攟鬠纙鞪黁漚曝裠鶸蜶籜鶩鑂韻糳';
+        if (!String.prototype.localeCompare) {
+            throw Error('String.prototype.localeCompare not supported.');
+        }
+        if (/[^\u4e00-\u9fa5]/.test(c)) {
+            return c;
+        }
+        for (var i = 0; i < boundaryChar.length; i++) {
+            if (boundaryChar[i].localeCompare(c, 'zh-CN-u-co-pinyin') >= 0) {
+                idx = i;
+                break;
+            }
+        }
+        return MAP[idx];
+    }
+
+    for (var key in map) {
+        if (map.hasOwnProperty(key) && (map[key].length != 0)) {
+            map[key].sort(function (a, b) {
+                return a.name.localeCompare(b.name, 'zh-CN-u-co-pinyin');
+            });
+        }
+    }
+
+    for (const key in map) {
+        innerHtml += `<div class='item-head' id=${key.toLowerCase()}>${key}</div>`
+        map[key].forEach((item) => {
+            innerHtml += `<div class='item'>
+            <img src='${item.badge}'></img>
+            <div>${item.name}</div>
+        </div>`
+        })
+    }
+
+    page.innerHTML = `<div class="center-top">
+            <div class="search">
+                <i class="iconfont icon-sousuo" style="color:black"></i>
+                <input type="text" placeholder="搜索">
+            </div>
+
+            <div style="width:25px; height: 25px; background-color: #cccccc; line-height:25px; 
+            text-align: center; border-radius: 5px;">
+                <i class="iconfont icon-jiahao_o"></i>
+            </div>
+        </div>`+innerHtml+` <ul class="letter">
+        <li> <a href="#a">A</a></li>
+        <li><a href="#b">B</a></li>
+        <li> <a href="#c">C</a></li>
+        <li><a href="#d">D</a> </li>
+        <li><a href="#e">E</a> </li>
+        <li><a href="#f">F</a> </li>
+        <li><a href="#g">G</a> </li>
+        <li><a href="#h">H</a> </li>
+        <li><a href="#i">I</a> </li>
+        <li><a href="#g">J</a> </li>
+        <li><a href="#k">K</a> </li>
+        <li><a href="#l">L</a> </li>
+        <li><a href="#m">M</a> </li>
+        <li><a href="#n">N</a> </li>
+        <li><a href="#o">O</a> </li>
+        <li><a href="#p">P</a> </li>
+        <li><a href="#q">Q</a> </li>
+        <li><a href="#r">R</a> </li>
+        <li><a href="#s">S</a> </li>
+        <li><a href="#t">T</a> </li>
+        <li><a href="#u">U</a> </li>
+        <li><a href="#v">V</a> </li>
+        <li><a href="#w">W</a> </li>
+        <li><a href="#x">X</a> </li>
+        <li><a href="#y">Y</a> </li>
+        <li><a href="#z">Z</a> </li>
+    </ul> `
+</script>
+
+</html>
