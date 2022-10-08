@@ -13,37 +13,38 @@
         width: 250px;
         height: 10000px;
     }
+
     .center-top {
-            height: 60px;
-            background-color: #F5F5F5;
-            border-right: 1px solid #e2e2e2;
-            display: flex;
-            justify-content: space-around;
-            align-items: center;
-            align-content: center;
-            position: sticky;
-            top: 0px;
-        }
+        height: 60px;
+        background-color: #F5F5F5;
+        border-right: 1px solid #e2e2e2;
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
+        align-content: center;
+        position: sticky;
+        top: 0px;
+    }
 
-        .center-top .search {
-            vertical-align: middle;
-            height: 25px;
-            width: 190px;
-            background-color: #e2e2e2;
-            border-radius: 5px;
-            color: black;
-            line-height: 25px;
-            text-align: center;
-        }
+    .center-top .search {
+        vertical-align: middle;
+        height: 25px;
+        width: 190px;
+        background-color: #e2e2e2;
+        border-radius: 5px;
+        color: black;
+        line-height: 25px;
+        text-align: center;
+    }
 
-        .center-top .search input {
-            display: inline-block;
-            vertical-align: middle;
-            outline: none;
-            border: none;
-            background-color: #e2e2e2;
-            font-size: 12px;
-        }
+    .center-top .search input {
+        display: inline-block;
+        vertical-align: middle;
+        outline: none;
+        border: none;
+        background-color: #e2e2e2;
+        font-size: 12px;
+    }
 
     .item {
         height: 60px;
@@ -57,11 +58,13 @@
         width: 40px;
         margin: 0px 20px;
     }
-    .item:hover{ 
+
+    .item:hover {
         background-color: #DFDDDB;
     }
+
     .item div {
-        
+
         height: 60px;
         line-height: 60px;
     }
@@ -73,7 +76,7 @@
         padding-left: 20px;
         /* margin:2px ; */
     }
-    
+
     * {
         margin: 0;
         padding: 0
@@ -102,9 +105,9 @@
 
 <body>
     <div id="page" class="page">
-       
+        
     </div>
-   
+
 </body>
 <script>
     let data = [
@@ -223,53 +226,44 @@
     ]
 
     let page = document.getElementById("page")
-    let innerHtml = ''
+    page.innerHTML = `<div class="center-top">
+            <div class="search">
+                <i class="iconfont icon-sousuo" style="color:black"></i>
+                <input type="text" placeholder="搜索" id='search-content'>
+            </div>
 
+            <div style="width:25px; height: 25px; background-color: #cccccc; line-height:25px; 
+            text-align: center; border-radius: 5px;">
+                <i class="iconfont icon-wodelianxiren"></i>
+            </div>
+        </div>
+        <div id="phoneList"></div>`
+    let phoneList = document.getElementById("phoneList")
+    
+    let innerHtml = ''
+    let searchContent = ''
     let map = {};
+
+    function updatePhonePage(){
+        innerHtml =''
+    map ={}
     let c = 'A'.charCodeAt();
     for (; c <= 'Z'.charCodeAt(); c++) {
         map[String.fromCharCode(c)] = [];
     }
     map['#'] = [];
-
+    // map创建对应关系
     data.forEach(function (item) {
         firstCharUpper = this.getFirstUpperChar(item.name);
-        if (map.hasOwnProperty(firstCharUpper)) {
-            map[firstCharUpper].push(item);
-        } else {
-            map['#'].push(item);
-        }
-    });
-
-    function getFirstUpperChar(str) {
-        string = String(str);
-        var c = string[0];
-        if (/[^\u4e00-\u9fa5]/.test(c)) {
-            return c.toUpperCase();
-        }
-        else {
-            return this.chineseToEnglish(c);
-        }
-    }
-
-    function chineseToEnglish(c) {
-        var idx = -1;
-        var MAP = 'ABCDEFGHJKLMNOPQRSTWXYZ';
-        var boundaryChar = '驁簿錯鵽樲鰒餜靃攟鬠纙鞪黁漚曝裠鶸蜶籜鶩鑂韻糳';
-        if (!String.prototype.localeCompare) {
-            throw Error('String.prototype.localeCompare not supported.');
-        }
-        if (/[^\u4e00-\u9fa5]/.test(c)) {
-            return c;
-        }
-        for (var i = 0; i < boundaryChar.length; i++) {
-            if (boundaryChar[i].localeCompare(c, 'zh-CN-u-co-pinyin') >= 0) {
-                idx = i;
-                break;
+        if(item.name.indexOf(searchContent)!=-1){
+            if (map.hasOwnProperty(firstCharUpper)) {
+                map[firstCharUpper].push(item);
+            } else {
+                map['#'].push(item);
             }
         }
-        return MAP[idx];
-    }
+      
+    });
 
     for (var key in map) {
         if (map.hasOwnProperty(key) && (map[key].length != 0)) {
@@ -289,17 +283,7 @@
         })
     }
 
-    page.innerHTML = `<div class="center-top">
-            <div class="search">
-                <i class="iconfont icon-sousuo" style="color:black"></i>
-                <input type="text" placeholder="搜索">
-            </div>
-
-            <div style="width:25px; height: 25px; background-color: #cccccc; line-height:25px; 
-            text-align: center; border-radius: 5px;">
-                <i class="iconfont icon-jiahao_o"></i>
-            </div>
-        </div>`+innerHtml+` <ul class="letter">
+    phoneList.innerHTML = innerHtml + ` <ul class="letter">
         <li> <a href="#a">A</a></li>
         <li><a href="#b">B</a></li>
         <li> <a href="#c">C</a></li>
@@ -327,6 +311,66 @@
         <li><a href="#y">Y</a> </li>
         <li><a href="#z">Z</a> </li>
     </ul> `
+
+    let content= document.getElementById('search-content')
+    content.addEventListener('input',(event)=>{
+        searchContent=content.value
+        updatePhonePage()
+    })
+
+    // 搜索框的实现,先对鼠标移入移出注册事件,再根据搜索框的内容搜索
+    let check = document.querySelector('.search').querySelector('input');
+    check.addEventListener('focus', function () {
+        check.parentNode.style.backgroundColor = 'white';
+        check.style.backgroundColor = 'white';
+    })
+    check.addEventListener('blur', function () {
+        check.parentNode.style.backgroundColor = '#e2e2e2';
+            check.style.backgroundColor = '#e2e2e2';
+        if (this.value) {
+            // this.value = "";
+        }
+    })
+
+    }
+
+    updatePhonePage()
+
+    // 取中文字体的字母
+    function getFirstUpperChar(str) {
+        string = String(str);
+        var c = string[0];
+        if (/[^\u4e00-\u9fa5]/.test(c)) {
+            return c.toUpperCase();
+        }
+        else {
+            return this.chineseToEnglish(c);
+        }
+    }
+    // 进行比较排序
+    function chineseToEnglish(c) {
+        var idx = -1;
+        var MAP = 'ABCDEFGHJKLMNOPQRSTWXYZ';
+        var boundaryChar = '驁簿錯鵽樲鰒餜靃攟鬠纙鞪黁漚曝裠鶸蜶籜鶩鑂韻糳';
+        if (!String.prototype.localeCompare) {
+            throw Error('String.prototype.localeCompare not supported.');
+        }
+        if (/[^\u4e00-\u9fa5]/.test(c)) {
+            return c;
+        }
+        for (var i = 0; i < boundaryChar.length; i++) {
+            if (boundaryChar[i].localeCompare(c, 'zh-CN-u-co-pinyin') >= 0) {
+                idx = i;
+                break;
+            }
+        }
+        return MAP[idx];
+    }
+
+
+
+
+
 </script>
 
 </html>

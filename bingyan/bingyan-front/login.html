@@ -1,0 +1,76 @@
+﻿
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>登录页面</title>
+
+    <link rel="stylesheet" href="common/css/login.css">
+</head>
+<script src="lib/axios.js"></script>
+<body>
+
+    <div class="container">
+
+        <div class="box">
+            <div>
+                <label >用户名</label></br>
+                <input type="text" name="uname" id="name" placeholder="用户名" class="input-box">
+                </br></br>
+                <label >密码</label></br>
+                <input type="password" name="uname" id="password" placeholder="密码" class="input-box"></br>
+                <button class="btn" id="register">注册</button>
+                <button class="btn" id="login">登 录</button>
+            </div>
+            <span class="option">第三方登录</span>
+            <div class="social">
+                <div class="box-radius">
+                    <img src="common/images/fb.png" alt="">
+                </div>
+                <div class="box-radius">
+                    <img src="common/images/google.png" alt="">
+                </div>
+                <div class="box-radius">
+                    <img src="common/images/linkedin.png" alt="">
+                </div>
+                <div class="box-radius">
+                    <img src="common/images/twitter.png" alt="">
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        let login = document.getElementById("login")
+        let register = document.getElementById("register")
+        register.onclick = ()=>{
+            let nameContent = document.getElementById("name")
+            let passwordContent = document.getElementById("password")
+            // debugger
+            axios({method: 'POST', url: 'http://127.0.0.1:3000/us' +
+                    '\\' +
+                    '\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\er/register', data: {name: nameContent.value,password: passwordContent.value}}).then(res => {
+                // debugger
+                alert(res.data.message)
+              }
+            )
+        }
+        //登录事件
+        login.onclick = ()=>{
+            let nameContent = document.getElementById("name")
+            let passwordContent = document.getElementById("password")
+            // window.location.href="../../layout.html?id=12";
+            axios({method: 'POST', url: 'http://127.0.0.1:3000/user/login', data: {name: nameContent.value,password: passwordContent.value}}).then(res => {
+                    let {data : {message,code ,list}} = res
+                    alert(message)
+                    if (code == "200"){
+                        window.location.href=`wechat.html?id=${list[0].id}`;
+                    }
+                }
+            )
+
+        }
+    </script>
+</body>
+</html>

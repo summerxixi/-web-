@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <!-- 思路：网页班的页面总共三部分，left,mid,right ,right设置最小宽度。left引用图标，-->
+  <link rel="stylesheet" href="//at.alicdn.com/t/c/font_3546889_wh88o4mc4gl.css">
+  <!--引入css-->
+  <link rel="stylesheet" type="text/css" href="common/css/wechat.css"/>
+</head>
+
+<body>
+<div class="container">
+  <div class="left">
+    <ul class="nav">
+      <img class="avatar" id="avatar"></img>
+      <li class="iconfont icon-xiaoxi_o" id="lianxi"></li>
+      <li class="iconfont icon-wodelianxiren" id="linkman"></li>
+      <li class="iconfont icon-zhengfangti-xianxing"></li>
+      <li class="iconfont icon-pengyouquan"></li>
+    </ul>
+  </div>
+  <div class="center">
+    <div class="center-top">
+      <div class="search">
+        <i class="iconfont icon-sousuo" style="color:black"></i>
+        <input type="text" placeholder="搜索">
+      </div>
+
+      <div style="width:25px; height: 25px; background-color: #cccccc; line-height:25px; 
+                text-align: center; border-radius: 5px;">
+        <i class="iconfont icon-jiahao_o"></i>
+      </div>
+    </div>
+    <!--用户列表-->
+    <ul class="message" id="userList">
+ 
+    </ul>
+
+
+  </div>
+  <div class="right">
+    <div class="right-top">
+      <p class="chatname" id="chatname"></p>
+    </div>
+    <div class="right-chat">
+      <!--内容-->
+      <ul id="right-chat-content">
+ 
+      </ul>
+    </div>
+
+    <div class="right-output">
+      <ul class="icon">
+
+        <li class="iconfont icon-xiaolian-" style="color:rgb(198, 218, 88);"></li>
+        <li class="iconfont icon-wenjianjia" style="color:rgb(138, 113, 12);"></li>
+        <li class="iconfont icon-jiandao" style="color:rgb(67, 55, 49);"></li>
+        <li class="iconfont icon-xiaoxi" style="color:rgb(92, 236, 128);"></li>
+        <li class="iconfont icon-dianhua" style="color:rgb(209, 141, 182);"></li>
+        <li class="iconfont icon-shipincopy" style="color:aquamarine;"></li>
+
+      </ul>
+      <textarea type="text" id="sr"></textarea>
+      <div class="send">
+        <div class="send-button">发送</div>
+      </div>
+    </div>
+
+  </div>
+
+
+</div>
+<script src="lib/axios.js"></script>
+<script type="module">
+  //获取控件
+  let avatar = document.getElementById("avatar")
+  let userList = document.getElementById("userList")
+  let chatname = document.getElementById("chatname")
+  let rightChatContent = document.getElementById("right-chat-content")
+  let linkman = document.getElementById("linkman")
+  let lianxi = document.getElementById("lianxi")
+  //跳转页面，点击
+  linkman.addEventListener('click',()=>{
+    window.location.href=`linkman.html?id=${data.curUserId}`;
+  })
+
+  let pageObj={};
+
+  let url = decodeURI(location.search); //获取url中"?"符后的字串 ('?id=1)
+  if ( url.indexOf( "?" ) != -1 ) {
+    let str = url.substr( 1 ); //substr()方法返回从参数值开始到结束的字符串；
+    let strs = str.split( "&" );
+    for ( let i = 0; i < strs.length; i++ ) {
+      pageObj[ strs[ i ].split( "=" )[ 0 ] ] = ( strs[ i ].split( "=" )[ 1 ] );
+    }
+  }
+
+
+  let data = {
+    //当前用户ID
+    curUserId: pageObj.id!=undefined?pageObj.id:'2',
+    //当前用户头像
+    curUserImage:'',
+    //点击其他用户时的其他用户id
+    otherUserId:'',
+    //点击其他用户时其他用户头像
+    otherUserImage:'',
+    //当前用户数组
+    userListData: [],
+    //当前会话的条数
+    messageLength:[]
+  }
+
+  //获取联系人列表
+  updateList()
+  
+  //设置点击事件
+  userList.onclick = (event)=>{
+    //获取到点击的用户名称 并进行替换
+    let text = event.target.innerHTML
+    if (text.indexOf('<img')!=-1){
+      //点击的整个
+      chatname.innerText = event.target.getElementsByTagName('p')[0].textContent
+      data.otherUserImage = event.target.getElementsByTagName('img')[0].src
+    }else if (text==''){
+      //点击的图片
+      chatname.innerText =event.target.parentNode.getElementsByTagName('p')[0].textContent
+      data.otherUserImage = event.target.parentNode.getElementsByTagName('img')[0].src
+    }else {
+      //点击的文字
+      chatname.innerText = event.target.parentNode.getElementsByTagName('p')[0].textContent
+      data.otherUserImage = event.target.parentNode.parentNode.getElementsByTagName('img')[0].src
+    }
+    //获取点击的id
+    data.otherUserId = data.userListData.find(item=>item.image == data.otherUserImage).id
+    updatePage()
+    updateList()
+  }
+  
+  //更新联系人列表状态
+  function updateList() {
+    //联系人
+    axios({method: 'POST', url: 'http://127.0.0.1:3000/user/getAll', data: {id: data.curUserId}}).then(res => {
+      //列表
+      let {data: {list}} = res
+      //拼接联系人列表
+      let innerHTML = ``
+      //赋值进去
+      data.userListData = list
+      //红色数量左边
+      let redNum = 0
+
+      //遍历
+      list.forEach(item => {
+        //存储当前用户头像
+        if (item.id == data.curUserId){
+          data.curUserImage = item.image;
+          avatar.setAttribute("src",item.image)
+        }else{
+          innerHTML += `<li>
+        <img src="${item.image}" alt="">
+`
+          //是否含有未读信息
+          if (item.num!=0){
+            innerHTML += `<div class="red-point">${item.num}</div>`
+            redNum += item.num
+
+          }
+          //消息体
+          innerHTML += ` <div class="content">
+          <p class="p-content">${item.name}</p>
+          <div class="p-message">${item.tailMessage==undefined?'':item.tailMessage}</div>
+          </div>
+        </li>`
+        }
+      })
+      if (redNum!=0){
+        lianxi.innerHTML =  `<div class="left-red-point">${redNum}</div>`
+      }else{
+        lianxi.innerHTML =  ``
+      }
+
+      //替换到联系人列表中
+      userList.innerHTML = innerHTML
+    })
+  }
+  
+  //更新输入内容
+  function updatePage(){
+    //获取输入的消息内容
+    axios({method: 'POST', url: 'http://127.0.0.1:3000/message/getAllById', data: {id: data.curUserId,otherId: data.otherUserId}}).then(res => {
+      let innerHtml = ``
+      let {data: {list}} = res
+
+      list.sort((a, b) => a.id - b.id)
+      //拼接
+      list.map(item=>{
+        if (item.orginId == data.curUserId){
+          innerHtml += `<li class="right-chat-myself">
+          <p>${item.text}</p>
+          <img src="${data.curUserImage}" alt="">
+        </li>`
+        }else{
+          innerHtml += `<li class="right-chat-other">
+          <img src="${data.otherUserImage}" alt="">
+          <p>${item.text}</p>
+        </li>`
+        }
+      })
+      //聊天页面
+      if (data.messageLength== []){
+        data.messageLength = list
+        rightChatContent.innerHTML = innerHtml
+        rightChatContent.scrollTop = rightChatContent.scrollHeight
+      }
+      if (JSON.stringify(data.messageLength)!=JSON.stringify(list)){
+        data.messageLength = list
+        rightChatContent.innerHTML = innerHtml
+        rightChatContent.scrollTop = rightChatContent.scrollHeight
+      }
+
+    })
+  }
+  
+  //聊天记录添加自己的聊天，按回车或者发送获取到输入框的内容。
+  document.querySelector('.send').addEventListener('click', () => {
+      addMessage()
+  })
+  document.querySelector('#sr').addEventListener('keyup', function (event) {
+    if (event.which === 13) {
+      addMessage()
+    }
+  })
+  
+  //发送消息
+  function addMessage() {
+    //获取发送的消息体
+    let content = document.getElementById('sr');
+    if (!content.value||content.value=='\n'){
+      alert('不能发送空白消息')
+      return
+    }
+    //发送消息接口
+    let params = {
+      orginId: data.curUserId,
+      toId: data.otherUserId,
+      text: content.value,
+      read: 1
+    }
+    //清空消息内容 
+    content.value = ""
+    axios({method: 'POST', url: 'http://127.0.0.1:3000/message/addMessage',data :params}).then(res => {
+      updatePage()
+    })
+  }
+  
+  //循环查看消息
+  setInterval(()=>{
+    if (data.curUserId&& data.otherUserId){
+      updatePage()
+      updateList()
+    }
+  },3000)
+
+  let tags = document.querySelector('.nav').querySelectorAll('.iconfont');
+  for (let i = 0; i < tags.length; i++) {
+    tags[i].onclick = function () {
+      for (let j = 0; j < tags.length; j++) {
+        tags[j].style.color = ''
+      }
+      this.style.color = '#07c160'
+    }
+  }
+  //初次时是绿色的
+  tags[0].style.color = '#07c160'
+
+
+ let search = document.querySelector('.center').querySelector('input');
+  let searchOutter = document.querySelector('.search');
+  search.onfocus = function () {
+    this.style.backgroundColor = '#fafdf9';
+    searchOutter.style.backgroundColor = '#fafdf9';
+    this.style.borderColor = 'grey'
+
+    console.log(this.backgroundColor)
+  }
+  search.onblur = function () {
+    this.style.backgroundColor = ' #e2e2e2';
+    searchOutter.style.backgroundColor = ' #e2e2e2';
+  }
+</script>
+
+</body>
+
+</html>

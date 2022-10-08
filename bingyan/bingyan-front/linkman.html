@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="//at.alicdn.com/t/c/font_3546889_wh88o4mc4gl.css">
+</head>
+<!--引入css-->
+<link rel="stylesheet" type="text/css" href="common/css/wechat.css"/>
+<link rel="stylesheet" type="text/css" href="common/css/linkman.css"/>
+
+<body>
+<div class="container">
+    <div class="left">
+        <ul class="nav">
+            <img class="avatar" id="avatar"></img>
+            <li class="iconfont icon-xiaoxi_o" id="wechat"></li>
+            <li class="iconfont icon-wodelianxiren"></li>
+            <li class="iconfont icon-zhengfangti-xianxing"></li>
+            <li class="iconfont icon-pengyouquan"></li>
+        </ul>
+    </div>
+    <div class="center">
+        <!--用户列表-->
+        <div class="center-top">
+            <div class="search">
+                <i class="iconfont icon-sousuo" style="color:black"></i>
+                <input type="text" placeholder="搜索">
+            </div>
+
+            <div
+              style="width:25px; height: 25px; background-color: #cccccc; line-height:25px; text-align: center; border-radius: 5px;" onclick="openDialog()">
+                <i class="iconfont icon-wodelianxiren"></i>
+            </div>
+        </div>
+        <!--用户列表-->
+        <ul class="message" id="userList">
+
+        </ul>
+    </div>
+    <div class="right" id="right-content">
+
+    </div>
+    
+    <div class="dialog" id="dialog">
+        <label class="modal-bg"></label>
+        <div class="modal-content">
+            <label class="close">
+                <i class="fa fa-times" aria-hidden="true"></i>
+            </label>
+            <header>
+                <h2>添加好友</h2>
+            </header>
+            <article class="modal-content-heads" id="modal-content-heads">
+     
+            </article>
+            <footer>
+                <label class="button danger" onclick="closeDialog()">关闭</label>
+            </footer>
+        </div>
+    </div>
+
+</div>
+
+
+</body>
+<script src="lib/axios.js"></script>
+<script>
+    //获取控件
+    let avatar = document.getElementById("avatar")
+    let rightContent = document.getElementById("right-content")
+    let dialog = document.getElementById("dialog")
+    let dialogList = document.getElementById("modal-content-heads")
+    let wechat = document.getElementById("wechat")
+    wechat.addEventListener('click',()=>{
+        window.location.href=`wechat.html?id=${data.curUserId}`;
+    })
+    
+    let pageObj={};
+    document.querySelector('.nav').querySelectorAll('.iconfont')[1].style.color = '#07c160'
+    let url = decodeURI(location.search); //获取url中"?"符后的字串 ('?modFlag=business&role=1')
+    if ( url.indexOf( "?" ) != -1 ) {
+        let str = url.substr( 1 ); //substr()方法返回从参数值开始到结束的字符串；
+        let strs = str.split( "&" );
+        for ( let i = 0; i < strs.length; i++ ) {
+            pageObj[ strs[ i ].split( "=" )[ 0 ] ] = ( strs[ i ].split( "=" )[ 1 ] );
+        }
+    }
+
+    //习惯了vue写法
+    let data = {
+        //当前用户ID
+        curUserId: pageObj.id!=undefined?pageObj.id:'3',
+        //当前用户头像
+        curUserImage:'',
+        //点击其他用户时的其他用户id
+        otherUserId:'',
+        //点击其他用户时其他用户头像
+        otherUserImage:'',
+        //当前用户数组
+        userListData: [],
+        //当前会话的条数
+        messageLength:[]
+    }
+
+    //获取联系人列表
+    updateList()
+
+    //更新联系人列表状态
+    function updateList() {
+        //联系人
+        axios({method: 'POST', url: 'http://127.0.0.1:3000/user/getAll', data: {id: data.curUserId}}).then(res => {
+            //列表
+            let {data: {list}} = res
+            data.userListData = list
+            //遍历
+            list.forEach(item => {
+                //存储当前用户头像
+                if (item.id == data.curUserId){
+                    data.curUserImage = item.image;
+                    avatar.setAttribute("src",item.image)
+                }
+            })
+            reRank()
+        })
+    }
+    
+    function gotoWechat() {
+        window.location.href=`wechat.html?id=${data.curUserId}`;
+    }
+    //重新排列联系人
+    function reRank (){
+        let userList = document.getElementById("userList")
+        let innerHtml = ``
+        
+        //查看有无申请
+        if (data.userListData[0].receive){
+            innerHtml = `
+            <div class="item-head">新的朋友</div>
+            <div class='item' id="receiveFriendsButton">
+                <div class="red-point red-point-link">${data.userListData[0].receive.split(",").length}</div>
+                <img src='common/images/newfriend.jpg'></img>
+                <div>新的朋友</div>
+            </div>`
+        }else{
+            innerHtml = `
+            <div class="item-head">新的朋友</div>
+            <div class='item' id="receiveFriendsButton">
+                <img src='common/images/newfriend.jpg'></img>
+                <div>新的朋友</div>
+            </div>`
+        }
+        
+        let map = {};
+        let c = 'A'.charCodeAt();
+        for (; c <= 'Z'.charCodeAt(); c++) {
+            map[String.fromCharCode(c)] = [];
+        }
+        map['#'] = [];
+        // map创建对应关系
+        data.userListData.forEach(function (item) {
+            firstCharUpper = this.getFirstUpperChar(item.name);
+            if (map.hasOwnProperty(firstCharUpper)) {
+                map[firstCharUpper].push(item);
+            } else {
+                map['#'].push(item);
+            }
+        });
+
+        for (var key in map) {
+            if (map.hasOwnProperty(key) && (map[key].length != 0)) {
+                map[key].sort(function (a, b) {
+                    return a.name.localeCompare(b.name, 'zh-CN-u-co-pinyin');
+                });
+            }
+        }
+
+        for (const key in map) {
+            //如果当前key有值
+            if (map[key].length!=0) {
+                innerHtml += `<div class='item-head' id=${key.toLowerCase()}>${key}</div>`
+                map[key].forEach((item) => {
+                    innerHtml += `<div class='item'>
+                    <img src='${item.image}'></img>
+                    <div>${item.name}</div>
+                </div>`
+                })
+            }
+        }
+
+        userList.innerHTML = innerHtml
+        //注册点击事件
+        receiveFriendsClick()
+    }
+
+
+    //循环查看消息
+    setInterval(()=>{
+        updateList()
+        findNewFriends()
+    },3000)
+    
+    findNewFriends()
+    //新朋友点击事件
+    function receiveFriendsClick() {
+        let receiveFriendsButton =  document.getElementById("receiveFriendsButton")
+        receiveFriendsButton.onclick =()=>{
+            let receiveList = data.userListData[0].receive.split(",")
+            if (receiveList.length){
+                rightContent.innerHTML = ``
+                axios({method: 'POST', url: 'http://127.0.0.1:3000/user/receiveFriends', data: {list: receiveList}}).then(res => {
+                    let {data: {list}} = res
+                    let innerHTML = ``
+
+                    list.forEach(item=>{
+                        innerHTML+= `
+                        <div class="right-item" >
+                              <div class="right-item-left">
+                              <img src='${item.image}'></img>
+                              <div class="right-item-left-head">${item.name}</div>  
+                              </div>
+                              <div class="right-item-right" onclick="successFriends(${item.id})">接受</div>
+                          </div>`
+                    })
+                    rightContent.innerHTML = innerHTML
+                })
+            }
+        }
+    }
+    //查询新朋友
+    function findNewFriends() {
+        axios({method: 'POST', url: 'http://127.0.0.1:3000/user/findFriends', data: {id: data.curUserId}}).then(res => {
+            let {data: {list}} = res
+            dialogList.innerHTML = ``
+
+            let innerHTML = ``
+            list.forEach(item=>{
+                innerHTML += `<div class='item'>
+                    <img src='${item.image}'></img>
+                    <div>${item.name}</div>
+                    <div class="modal-content-item-send" onclick="addFriend(${item.id})">添加好友</div>
+                </div>`
+            })
+            dialogList.innerHTML = innerHTML
+        })
+    }
+
+    //新朋友接受点击事件
+    function successFriends(id) {
+        axios({method: 'POST', url: 'http://127.0.0.1:3000/user/successFriends', data: {id: data.curUserId,otherId:id}}).then(res => {
+            location.reload();
+        })
+    }
+
+    // 取中文字体的字母
+    function getFirstUpperChar(str) {
+        string = String(str);
+        var c = string[0];
+        if (/[^\u4e00-\u9fa5]/.test(c)) {
+            return c.toUpperCase();
+        }
+        else {
+            return this.chineseToEnglish(c);
+        }
+    }
+    // 进行比较排序
+    function chineseToEnglish(c) {
+        var idx = -1;
+        var MAP = 'ABCDEFGHJKLMNOPQRSTWXYZ';
+        var boundaryChar = '驁簿錯鵽樲鰒餜靃攟鬠纙鞪黁漚曝裠鶸蜶籜鶩鑂韻糳';
+        if (!String.prototype.localeCompare) {
+            throw Error('String.prototype.localeCompare not supported.');
+        }
+        if (/[^\u4e00-\u9fa5]/.test(c)) {
+            return c;
+        }
+        for (var i = 0; i < boundaryChar.length; i++) {
+            if (boundaryChar[i].localeCompare(c, 'zh-CN-u-co-pinyin') >= 0) {
+                idx = i;
+                break;
+            }
+        }
+        return MAP[idx];
+    }
+
+    closeDialog()
+    //关闭添加好友
+    function closeDialog() {
+        dialog.style.display = 'none'
+    }
+    
+    //添加好友
+    function addFriend(otherId){
+        axios({method: 'POST', url: 'http://127.0.0.1:3000/user/addFriend', data: {id: data.curUserId,otherId,otherId}}).then(res => {
+            closeDialog()
+        })
+    }
+    
+    //打开添加好友
+    function openDialog() {
+        dialog.style.display = 'block'
+    }
+
+    // userList.innerHTML = `<div class="center-top">
+    //         <div class="search">
+    //             <i class="iconfont icon-sousuo" style="color:black"></i>
+    //             <input type="text" placeholder="搜索">
+    //         </div>
+    //
+    //         <div style="width:25px; height: 25px; background-color: #cccccc; line-height:25px; 
+    //         text-align: center; border-radius: 5px;">
+    //             <i class="iconfont icon-wodelianxiren"></i>
+    //         </div>
+    //     </div>`+ innerHtml + ` <ul class="letter">
+    //     <li> <a href="#a">A</a></li>
+    //     <li><a href="#b">B</a></li>
+    //     <li> <a href="#c">C</a></li>
+    //     <li><a href="#d">D</a> </li>
+    //     <li><a href="#e">E</a> </li>
+    //     <li><a href="#f">F</a> </li>
+    //     <li><a href="#g">G</a> </li>
+    //     <li><a href="#h">H</a> </li>
+    //     <li><a href="#i">I</a> </li>
+    //     <li><a href="#g">J</a> </li>
+    //     <li><a href="#k">K</a> </li>
+    //     <li><a href="#l">L</a> </li>
+    //     <li><a href="#m">M</a> </li>
+    //     <li><a href="#n">N</a> </li>
+    //     <li><a href="#o">O</a> </li>
+    //     <li><a href="#p">P</a> </li>
+    //     <li><a href="#q">Q</a> </li>
+    //     <li><a href="#r">R</a> </li>
+    //     <li><a href="#s">S</a> </li>
+    //     <li><a href="#t">T</a> </li>
+    //     <li><a href="#u">U</a> </li>
+    //     <li><a href="#v">V</a> </li>
+    //     <li><a href="#w">W</a> </li>
+    //     <li><a href="#x">X</a> </li>
+    //     <li><a href="#y">Y</a> </li>
+    //     <li><a href="#z">Z</a> </li>
+    // </ul> `
+    //
+    //
+    // 搜索框的实现，根据input框的内容，全局搜索；
+    let check = document.querySelector('.search').querySelector('input');
+    check.addEventListener('focus', function () {
+        check.parentNode.style.backgroundColor = 'white';
+        check.style.backgroundColor = 'white';
+    })
+    check.addEventListener('blur', function () {
+        if (this.value) {
+
+            check.parentNode.style.backgroundColor = '#e2e2e2';
+            check.style.backgroundColor = '#e2e2e2';
+            this.value = "";
+        }
+    })
+</script>
+
+</html>

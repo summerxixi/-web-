@@ -534,11 +534,6 @@
      
         // 聊天中间界面，改进：用数组存放信息
 
-
-
-
-
-
         //聊天记录添加自己的聊天，按回车或者发送获取到输入框的内容。
         document.querySelector('.send').addEventListener('click', () => { addMessage() })
         document.querySelector('#sr').addEventListener('keyup',function (event){
@@ -557,7 +552,6 @@
             document.querySelector('.right-chat').appendChild(newLi);
             content.value = ""
         }
-
         var tags = document.querySelector('.nav').querySelectorAll('.iconfont');
         for (let i = 0; i < tags.length; i++) {
             tags[i].onclick = function () {
